@@ -1,0 +1,284 @@
+[
+    {
+        "model": "analytics.category",
+        "pk": 1,
+        "fields": {
+            "name": "Electronics"
+        }
+    },
+    {
+        "model": "analytics.category",
+        "pk": 2,
+        "fields": {
+            "name": "Home Appliances"
+        }
+    },
+    {
+        "model": "analytics.category",
+        "pk": 3,
+        "fields": {
+            "name": "Furniture"
+        }
+    },
+    {
+        "model": "analytics.tag",
+        "pk": 1,
+        "fields": {
+            "name": "Gadgets"
+        }
+    },
+    {
+        "model": "analytics.tag",
+        "pk": 2,
+        "fields": {
+            "name": "Luxury"
+        }
+    },
+    {
+        "model": "analytics.tag",
+        "pk": 3,
+        "fields": {
+            "name": "Essentials"
+        }
+    },
+    {
+        "model": "analytics.product",
+        "pk": 1,
+        "fields": {
+            "name": "Smartphone",
+            "description": "A high-end smartphone",
+            "SKU": "SKU123",
+            "price": "699.99",
+            "category": 1
+        }
+    },
+    {
+        "model": "analytics.product",
+        "pk": 2,
+        "fields": {
+            "name": "Tablet",
+            "description": "A high-end tablet",
+            "SKU": "SKU124",
+            "price": "499.99",
+            "category": 1
+        }
+    },
+    {
+        "model": "analytics.product",
+        "pk": 3,
+        "fields": {
+            "name": "Laptop",
+            "description": "A powerful gaming laptop",
+            "SKU": "SKU125",
+            "price": "1299.99",
+            "category": 1
+        }
+    },
+    {
+        "model": "analytics.product",
+        "pk": 4,
+        "fields": {
+            "name": "Microwave",
+            "description": "High-efficiency microwave",
+            "SKU": "SKU126",
+            "price": "199.99",
+            "category": 2
+        }
+    },
+    {
+        "model": "analytics.product",
+        "pk": 5,
+        "fields": {
+            "name": "Sofa",
+            "description": "Comfortable leather sofa",
+            "SKU": "SKU127",
+            "price": "999.99",
+            "category": 3
+        }
+    },
+    {
+        "model": "analytics.customer",
+        "pk": 1,
+        "fields": {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "country": "USA",
+            "registration_date": "2023-01-01"
+        }
+    },
+    {
+        "model": "analytics.customer",
+        "pk": 2,
+        "fields": {
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "country": "USA",
+            "registration_date": "2023-02-01"
+        }
+    },
+    {
+        "model": "analytics.customer",
+        "pk": 3,
+        "fields": {
+            "name": "Alice Johnson",
+            "email": "alice@example.com",
+            "country": "USA",
+            "registration_date": "2023-02-20"
+        }
+    },
+    {
+        "model": "analytics.customer",
+        "pk": 4,
+        "fields": {
+            "name": "Michael Clark",
+            "email": "michael@example.com",
+            "country": "Canada",
+            "registration_date": "2023-03-15"
+        }
+    },
+    {
+        "model": "analytics.inventory",
+        "pk": 1,
+        "fields": {
+            "product": 1,
+            "quantity": 100,
+            "last_restocked_date": "2023-01-01"
+        }
+    },
+    {
+        "model": "analytics.inventory",
+        "pk": 2,
+        "fields": {
+            "product": 2,
+            "quantity": 50,
+            "last_restocked_date": "2023-03-01"
+        }
+    },
+    {
+        "model": "analytics.inventory",
+        "pk": 3,
+        "fields": {
+            "product": 3,
+            "quantity": 10,
+            "last_restocked_date": "2023-03-01"
+        }
+    },
+    {
+        "model": "analytics.inventory",
+        "pk": 4,
+        "fields": {
+            "product": 4,
+            "quantity": 20,
+            "last_restocked_date": "2023-04-01"
+        }
+    },
+    {
+        "model": "analytics.inventory",
+        "pk": 5,
+        "fields": {
+            "product": 5,
+            "quantity": 5,
+            "last_restocked_date": "2023-02-01"
+        }
+    },
+    {
+        "model": "analytics.order",
+        "pk": 1,
+        "fields": {
+            "customer": 1,
+            "order_date": "2023-03-01T00:00:00Z",
+            "status": "delivered",
+            "total_amount": "699.99"
+        }
+    },
+    {
+        "model": "analytics.order",
+        "pk": 2,
+        "fields": {
+            "customer": 2,
+            "order_date": "2023-03-15T00:00:00Z",
+            "status": "delivered",
+            "total_amount": "499.99"
+        }
+    },
+    {
+        "model": "analytics.order",
+        "pk": 3,
+        "fields": {
+            "customer": 1,
+            "order_date": "2023-03-10T00:00:00Z",
+            "status": "delivered",
+            "total_amount": "1299.99"
+        }
+    },
+    {
+        "model": "analytics.order",
+        "pk": 4,
+        "fields": {
+            "customer": 3,
+            "order_date": "2023-04-10T00:00:00Z",
+            "status": "delivered",
+            "total_amount": "999.99"
+        }
+    },
+    {
+        "model": "analytics.order",
+        "pk": 5,
+        "fields": {
+            "customer": 4,
+            "order_date": "2023-05-05T00:00:00Z",
+            "status": "pending",
+            "total_amount": "199.99"
+        }
+    },
+    {
+        "model": "analytics.orderitem",
+        "pk": 1,
+        "fields": {
+            "order": 1,
+            "product": 1,
+            "quantity": 1,
+            "price_at_time_of_order": "699.99"
+        }
+    },
+    {
+        "model": "analytics.orderitem",
+        "pk": 2,
+        "fields": {
+            "order": 2,
+            "product": 2,
+            "quantity": 1,
+            "price_at_time_of_order": "499.99"
+        }
+    },
+    {
+        "model": "analytics.orderitem",
+        "pk": 3,
+        "fields": {
+            "order": 3,
+            "product": 3,
+            "quantity": 1,
+            "price_at_time_of_order": "1299.99"
+        }
+    },
+    {
+        "model": "analytics.orderitem",
+        "pk": 4,
+        "fields": {
+            "order": 4,
+            "product": 5,
+            "quantity": 1,
+            "price_at_time_of_order": "999.99"
+        }
+    },
+    {
+        "model": "analytics.orderitem",
+        "pk": 5,
+        "fields": {
+            "order": 5,
+            "product": 5,
+            "quantity": 1,
+            "price_at_time_of_order": "199.99"
+        }
+    }
+]
