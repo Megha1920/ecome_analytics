@@ -19,7 +19,7 @@ from django.utils.dateparse import parse_date
 
 # API View for retrieving aggregated sales data
 class SalesDataView(generics.ListAPIView):
-    permission_classes = []
+    permission_classes =  [IsAuthenticated] 
 
     def get_queryset(self):
         
@@ -33,7 +33,7 @@ class SalesDataView(generics.ListAPIView):
 class InventoryUpdateView(generics.UpdateAPIView):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
 # API View for accessing customer information
 class CustomerListView(generics.ListAPIView):
@@ -43,7 +43,7 @@ class CustomerListView(generics.ListAPIView):
 
 # API View for generating monthly sales report to Excel
 class GenerateMonthlySalesReportView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, year, month):
         
@@ -86,8 +86,7 @@ class GenerateMonthlySalesReportView(APIView):
         return response
 
 class AnalyticsOverviewView(generics.GenericAPIView):
-    permission_classes = []  
-
+    permission_classes = [IsAuthenticated]
     def get(self, request):
        
         start_date = timezone.datetime(2023, 1, 1, tzinfo=timezone.get_current_timezone())
