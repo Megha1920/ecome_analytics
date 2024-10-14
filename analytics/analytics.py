@@ -1,8 +1,9 @@
-from django.db.models import Sum, Count, F, Q, Max  # Import Max to avoid warnings
+from django.db.models import Sum, Count, F, Q, Max  
 from datetime import timedelta
 from .models import OrderItem, Customer
 
 class SalesAnalytics:
+    
     def __init__(self, start_date, end_date):
         self.start_date = start_date
         self.end_date = end_date
@@ -26,13 +27,13 @@ class SalesAnalytics:
         )
         return top_products_by_country
 
-    # Compute customer churn rate
+    # Computing customer churn rate
     def compute_customer_churn_rate(self):
         churned_customers = (
             Customer.objects.annotate(
                 last_order_date=Max('orders__order_date')
             ).filter(
-                last_order_date__lt=self.end_date - timedelta(days=180)  # Assume churn if no order in last 6 months
+                last_order_date__lt=self.end_date - timedelta(days=180)  # Assuming churn if no order in last 6 months
             ).count()
         )
         total_customers = Customer.objects.count()
