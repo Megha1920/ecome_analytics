@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from django.utils import timezone
 from rest_framework.views import APIView
 from io import BytesIO
-from datetime import datetime
+from rest_framework import status
+
 from django.db.models import Sum, F
 from django.shortcuts import get_object_or_404
 from .models import Customer, Inventory, OrderItem
@@ -13,11 +14,9 @@ from .recommendation import RecommendationEngine
 from openpyxl import Workbook
 from django.http import HttpResponse
 from rest_framework.permissions import IsAuthenticated
-from datetime import date
-from rest_framework.permissions import AllowAny
-from django.utils.dateparse import parse_date 
 
-# API View for retrieving aggregated sales data
+
+
 class SalesDataView(generics.ListAPIView):
     permission_classes =  [IsAuthenticated] 
 
@@ -29,61 +28,77 @@ class SalesDataView(generics.ListAPIView):
         queryset = self.get_queryset()
         return Response(queryset)
 
-# API View for updating inventory levels
+
 class InventoryUpdateView(generics.UpdateAPIView):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
     permission_classes = [IsAuthenticated]
 
-# API View for accessing customer information
+
 class CustomerListView(generics.ListAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [IsAuthenticated]
 
-# API View for generating monthly sales report to Excel
+
 class GenerateMonthlySalesReportView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, year, month):
-        
-        start_date = timezone.datetime(year, month, 1)
-        end_date = timezone.datetime(year, month + 1, 1) if month < 12 else timezone.datetime(year + 1, 1, 1)
+        try:
+           
+            if not (1 <= month <= 12):
+                return Response({"error": "Invalid month provided."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            start_date = timezone.datetime(year, month, 1)
+            end_date = timezone.datetime(year, month + 1, 1) if month < 12 else timezone.datetime(year + 1, 1, 1)
+            
+            
+            sales_data = (
+                OrderItem.objects.filter(order__order_date__range=(start_date, end_date))
+                .values('product__name', 'quantity', 'price_at_time_of_order')
+            )
 
-       
-        sales_data = (
-            OrderItem.objects.filter(order__order_date__range=(start_date, end_date))
-            .values('product__name', 'quantity', 'price_at_time_of_order')
-        )
+            
+            if not sales_data.exists():
+                return Response({"error": "No sales data found for the given month."}, status=status.HTTP_404_NOT_FOUND)
 
-        
-        workbook = Workbook()
-        sheet = workbook.active
-        sheet.title = f'Sales Report {year}-{month:02d}'
+            
+            workbook = Workbook()
+            sheet = workbook.active
+            sheet.title = f'Sales Report {year}-{month:02d}'
 
-        
-        headers = ['Product Name', 'Quantity Sold', 'Price at Time of Order', 'Total Revenue']
-        sheet.append(headers)
+            headers = ['Product Name', 'Quantity Sold', 'Price at Time of Order', 'Total Revenue']
+            sheet.append(headers)
 
-        
-        for item in sales_data:
-            total_revenue = item['quantity'] * item['price_at_time_of_order']
-            sheet.append([item['product__name'], item['quantity'], item['price_at_time_of_order'], total_revenue])
+            for item in sales_data:
+                total_revenue = item['quantity'] * item['price_at_time_of_order']
+                sheet.append([item['product__name'], item['quantity'], item['price_at_time_of_order'], total_revenue])
 
-        
-        total_revenue_row = ['Total Revenue', '', '', sum(item['quantity'] * item['price_at_time_of_order'] for item in sales_data)]
-        sheet.append(total_revenue_row)
+            total_revenue_row = ['Total Revenue', '', '', sum(item['quantity'] * item['price_at_time_of_order'] for item in sales_data)]
+            sheet.append(total_revenue_row)
 
-        
-        buffer = BytesIO()
-        workbook.save(buffer)
-        buffer.seek(0)
+            
+            buffer = BytesIO()
+            workbook.save(buffer)
+            buffer.seek(0)
 
-        
-        response = HttpResponse(buffer.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = f'attachment; filename="monthly_sales_report_{year}_{month:02d}.xlsx"'
+            response = HttpResponse(buffer.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = f'attachment; filename="monthly_sales_report_{year}_{month:02d}.xlsx"'
 
-        return response
+            return response
+
+        except ValueError as ve:
+            
+            return Response({"error": f"Invalid input: {str(ve)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        except OrderItem.DoesNotExist:
+            
+            return Response({"error": "No sales data found."}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            
+            return Response({"error": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AnalyticsOverviewView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]

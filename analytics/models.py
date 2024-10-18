@@ -1,5 +1,3 @@
-# analytics/models.py
-
 from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import post_save
@@ -33,7 +31,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True)
 
-    # Custom manager
+    
     objects = ProductManager()
 
     def __str__(self):
@@ -50,7 +48,7 @@ class Customer(models.Model):
         return self.name
 
     def calculate_lifetime_value(self):
-        # Assuming each order has a total_amount field
+        
         orders = self.orders.all()
         return orders.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
 
@@ -73,10 +71,10 @@ class Order(models.Model):
 
     def calculate_tax(self):
         tax_rates = {
-            'USA': 0.1,    # 10%
-            'UK': 0.2,     # 20%
-            'India': 0.18   # 18%
-            # Add more countries as needed
+            'USA': 0.1,    
+            'UK': 0.2,    
+            'India': 0.18   
+            
         }
         country_tax_rate = tax_rates.get(self.customer.country, 0)
         return self.total_amount * country_tax_rate
@@ -109,9 +107,9 @@ class Inventory(models.Model):
         return f"{self.product.name} - {self.quantity} in stock"
 
     def save(self, *args, **kwargs):
-        # Check if inventory is running low
+        
         if self.quantity < 10:
-            # Logic to send a restock alert (e.g., send an email or alert admin)
+            
             print(f"Alert: {self.product.name} is low in stock!")
         super().save(*args, **kwargs)
 

@@ -17,6 +17,10 @@ class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = '__all__'
+        extra_kwargs = {
+            'product': {'required': False},      
+            'last_restocked_date': {'required': False}     
+        }
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
